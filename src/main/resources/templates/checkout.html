@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <h1>Checkout</h1>
+</header>
+
+<section id="checkout-form">
+    <h2>Order Summary</h2>
+    <div id="order-summary">
+        <p>Total Price: <span id="total-price"></span></p>
+    </div>
+
+    <h3>Delivery Address</h3>
+    <form id="checkout-form">
+        <input type="text" id="address" placeholder="Enter your delivery address" required>
+        <button type="submit">Confirm Order</button>
+    </form>
+</section>
+
+<script src="/js/checkout.js"></script>
+</body>
+</html>

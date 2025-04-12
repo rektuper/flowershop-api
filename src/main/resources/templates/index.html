@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower Shop</title>
+    <link rel="stylesheet" href="./../static/css/css/styles.css">
+</head>
+<body>
+<header>
+    <h1>Welcome to Our Flower Shop</h1>
+    <a href="/cart">Go to Cart</a>
+</header>
+
+<section id="flowers">
+    <h2>Available Flowers</h2>
+    <div class="flower-list">
+        <div th:each="flower : ${flowers}" class="flower-item">
+            <img th:src="@{${flower.imageUrl}}" alt="Flower Image">
+            <h3 th:text="${flower.name}">Flower Name</h3>
+            <p th:text="${flower.price}">Price</p>
+            <button th:data-id="${flower.id}" class="add-to-cart">Add to Cart</button>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 Flower Shop. All rights reserved.</p>
+</footer>
+
+<script src="./../static/css/js/main.js"></script>
+</body>
+</html>

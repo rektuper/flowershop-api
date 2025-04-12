@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <h1>Your Cart</h1>
+    <a href="/">Back to Shop</a>
+</header>
+
+<section id="cart-items">
+    <h2>Your Items</h2>
+    <div th:each="cartItem : ${cartItems}" class="cart-item">
+        <img th:src="@{${cartItem.flower.imageUrl}}" alt="Flower Image">
+        <h3 th:text="${cartItem.flower.name}">Flower Name</h3>
+        <p th:text="${cartItem.flower.price}">Price</p>
+        <button th:data-id="${cartItem.id}" class="remove-from-cart">Remove</button>
+    </div>
+    <h3>Total Price: <span th:text="${totalPrice}">0</span></h3>
+    <button id="clear-cart">Clear Cart</button>
+    <button id="checkout">Proceed to Checkout</button>
+</section>
+
+<script src="/js/cart.js"></script>
+</body>
+</html>
