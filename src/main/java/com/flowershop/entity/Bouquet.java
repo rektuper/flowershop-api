@@ -24,7 +24,11 @@ public class Bouquet {
 
     private boolean inStock;
 
+    @NotBlank
+    private String imageUrl;
+
     @ElementCollection
     private List<String> flowerList;
+
 }
 
