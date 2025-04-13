@@ -14,7 +14,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/bouquets")
+@RequestMapping("/bouquets")
 public class BouquetController {
 
     private final BouquetService service;
