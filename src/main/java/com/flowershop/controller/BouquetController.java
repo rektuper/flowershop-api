@@ -5,26 +5,35 @@ import com.flowershop.service.BouquetService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/bouquets")
+@RequestMapping("/api/bouquets")
 public class BouquetController {
+
     private final BouquetService service;
 
     public BouquetController(BouquetService service) {
         this.service = service;
     }
 
+    // Доступен всем (например, на главной странице магазина)
     @GetMapping
     public List<Bouquet> getAll() {
         return service.findAll();
     }
 
+    // Только для аутентифицированных пользователей
     @PostMapping
-    public ResponseEntity<Bouquet> create(@Valid @RequestBody Bouquet bouquet) {
+    public ResponseEntity<Bouquet> create(
+            @Valid @RequestBody Bouquet bouquet,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        // можно проверить роли, если нужно
         Bouquet saved = service.save(bouquet);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
@@ -34,13 +43,23 @@ public class BouquetController {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    // Только для аутентифицированных пользователей
     @PutMapping("/{id}")
-    public ResponseEntity<Bouquet> update(@PathVariable Long id, @Valid @RequestBody Bouquet bouquet) {
-        return ResponseEntity.ok(service.update(id, bouquet));
+    public ResponseEntity<Bouquet> update(
+            @PathVariable Long id,
+            @Valid @RequestBody Bouquet bouquet,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        Bouquet updated = service.update(id, bouquet);
+        return ResponseEntity.ok(updated);
     }
 
+    // Только для аутентифицированных пользователей
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
