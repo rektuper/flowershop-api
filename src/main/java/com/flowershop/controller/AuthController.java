@@ -1,33 +1,83 @@
-//package com.flowershop.controller;
-//
-//import com.flowershop.entity.User;
-//import com.flowershop.service.UserService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.*;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//
-//@RestController
-//@RequestMapping("/api/auth")
-//public class AuthController {
-//
-//    @Autowired
-//    private UserService userService;
-//
-//    @PostMapping("/register")
-//    public User register(@RequestBody User user) {
-//        return userService.registerUser(user.getUsername(), user.getPassword());
-//    }
-//
-//    @PostMapping("/login")
-//    public String login(@RequestBody User user) {
-//        try {
-//            User existingUser = userService.findByUsername(user.getUsername());
-//            if (new BCryptPasswordEncoder().matches(user.getPassword(), existingUser.getPassword())) {
-//                return "Login successful";
-//            }
-//            return "Invalid credentials";
-//        } catch (Exception e) {
-//            return "Invalid credentials";
-//        }
-//    }
-//}
+package com.flowershop.controller;
+
+import com.flowershop.DTO.AuthRequest;
+import com.flowershop.DTO.RegisterRequest;
+import com.flowershop.DTO.AuthResponse;
+import com.flowershop.entity.Role;
+import com.flowershop.entity.User;
+import com.flowershop.repository.RoleRepository;
+import com.flowershop.repository.UserRepository;
+import com.flowershop.security.JwtUtil;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
+
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthController(AuthenticationManager authenticationManager,
+                          JwtUtil jwtUtil,
+                          UserRepository userRepository,
+                          RoleRepository roleRepository,
+                          PasswordEncoder passwordEncoder) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUserLogin(), request.getUserPassword())
+            );
+
+            User user = userRepository.findByUserLogin(request.getUserLogin())
+                    .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+
+            String token = jwtUtil.generateToken(user);
+            return ResponseEntity.ok(new AuthResponse(token));
+
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(401).body(new AuthResponse("Неверный логин или пароль"));
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        if (userRepository.findByUserLogin(request.getUserLogin()).isPresent()) {
+            return ResponseEntity.badRequest().body(new AuthResponse("Пользователь с таким именем уже существует"));
+        }
+
+        Role roleUser = roleRepository.findByRoleName("USER")
+                .orElseGet(() -> {
+                    Role newRole = new Role();
+                    newRole.setRoleName("USER");
+                    return roleRepository.save(newRole);
+                });
+
+        User newUser = new User();
+        newUser.setUserLogin(request.getUserLogin());
+        newUser.setUserPassword(passwordEncoder.encode(request.getUserPassword()));
+        newUser.setRoles(Set.of(roleUser));
+        userRepository.save(newUser);
+
+        String token = jwtUtil.generateToken(newUser);
+        return ResponseEntity.ok(new AuthResponse(token));
+    }
+}

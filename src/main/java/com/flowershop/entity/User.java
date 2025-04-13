@@ -1,14 +1,15 @@
 package com.flowershop.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 
+@Data
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class User extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
-    
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
