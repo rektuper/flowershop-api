@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    // new message from bunny
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // Настройка глобального CORS
