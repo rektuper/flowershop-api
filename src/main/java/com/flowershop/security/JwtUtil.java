@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "secret_key_123";
+    private final String SECRET_KEY = "thisIsMySuperSecretKeyForJwtTokenWhichIsAtLeast32Characters";
 
     // Срок действия токена (например, 10 часов)
     private final long JWT_EXPIRATION_MS = 1000 * 60 * 60 * 10;
@@ -38,6 +38,13 @@ public class JwtUtil {
     // Генерация токена
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+
+        // Добавим роли
+        claims.put("roles", userDetails.getAuthorities()
+                .stream()
+                .map(auth -> auth.getAuthority())
+                .toList());
+
         return createToken(claims, userDetails.getUsername());
     }
 
@@ -47,7 +54,6 @@ public class JwtUtil {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    // ======================== PRIVATE ========================
 
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());

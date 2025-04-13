@@ -8,6 +8,7 @@ import com.flowershop.entity.User;
 import com.flowershop.repository.RoleRepository;
 import com.flowershop.repository.UserRepository;
 import com.flowershop.security.JwtUtil;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -41,6 +44,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUserLogin(), request.getUserPassword())
@@ -58,7 +62,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest request) {
+        System.out.println("==> userLogin = " + request.getUserLogin());
+        System.out.println("==> userPassword = " + request.getUserPassword());
         if (userRepository.findByUserLogin(request.getUserLogin()).isPresent()) {
             return ResponseEntity.badRequest().body(new AuthResponse("Пользователь с таким именем уже существует"));
         }
