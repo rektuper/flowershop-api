@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItemResponse {
+    private Long id;
     private String bouquetName;
     private Integer quantity;
     private Double totalPrice;

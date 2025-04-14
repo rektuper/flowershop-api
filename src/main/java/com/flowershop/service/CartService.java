@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,23 +25,31 @@ public class CartService {
     private final UserRepository userRepository;
 
     // Добавление товара в корзину
-    public void addToCart(String username, CartItemDTO dto) {
+    public CartItem addToCart(String username, CartItemDTO dto) {
         User user = userRepository.findByUserLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
 
-        Bouquet bouquet = bouquetRepository.findById(dto.getBouquetId())
-                .orElseThrow(() -> new RuntimeException("Букет не найден"));
+        // Найдём, есть ли уже такой букет у пользователя
 
-        CartItem item = cartItemRepository.findByUserAndBouquet(user, bouquet)
-                .orElse(null);
+        Optional<CartItem> existingItem = cartItemRepository.findByUserAndBouquet(
+                user, bouquetRepository.findById(dto.getBouquetId())
+                        .orElseThrow(() -> new RuntimeException("Bouquet not found"))
+        );
 
-        if (item != null) {
+        if (existingItem.isPresent()) {
+            CartItem item = existingItem.get();
             item.setQuantity(item.getQuantity() + dto.getQuantity());
+            return cartItemRepository.save(item);
         } else {
-            item = new CartItem(null, user, bouquet, dto.getQuantity());
-        }
+            Bouquet bouquet = bouquetRepository.findById(dto.getBouquetId())
+                    .orElseThrow(() -> new RuntimeException("Букет не найден"));
 
-        cartItemRepository.save(item);
+            CartItem newItem = new CartItem();
+            newItem.setUser(user);
+            newItem.setBouquet(bouquet);
+            newItem.setQuantity(dto.getQuantity());
+            return cartItemRepository.save(newItem);
+        }
     }
 
     // Получение всех товаров в корзине с деталями
@@ -52,6 +61,7 @@ public class CartService {
 
         return cartItems.stream()
                 .map(item -> new CartItemResponse(
+                        item.getId(),
                         item.getBouquet().getName(),
                         item.getQuantity(),
                         item.getTotalPrice(),
@@ -71,6 +81,20 @@ public class CartService {
         if (item.getUser().equals(user)) {
             cartItemRepository.delete(item);
         }
+    }
+
+    public void updateQuantity(String username, Long bouquetId, int quantity) {
+        User user = userRepository.findByUserLogin(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+
+        Bouquet bouquet = bouquetRepository.findById(bouquetId)
+                .orElseThrow(() -> new RuntimeException("Букет не найден"));
+
+        CartItem item = cartItemRepository.findByUserAndBouquet(user, bouquet)
+                .orElseThrow(() -> new RuntimeException("Товар не найден в корзине"));
+
+        item.setQuantity(quantity);
+        cartItemRepository.save(item);
     }
 }
 

@@ -17,7 +17,7 @@ public class JwtUtil {
     private final String SECRET_KEY = "thisIsMySuperSecretKeyForJwtTokenWhichIsAtLeast32Characters";
 
     // Срок действия токена (например, 10 часов)
-//    private final long JWT_EXPIRATION_MS = 60000;
+    private final long JWT_EXPIRATION_MS = 1000 * 60 * 60 * 10;
 
     // Извлечь имя пользователя из токена
     public String extractUsername(String token) {
@@ -64,6 +64,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_MS))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
@@ -75,4 +76,3 @@ public class JwtUtil {
                 .getBody();
     }
 }
-

@@ -1,5 +1,6 @@
 package com.flowershop.controller;
 
+import com.flowershop.DTO.CartItemResponse;
 import com.flowershop.entity.Bouquet;
 import com.flowershop.service.BouquetService;
 import jakarta.validation.Valid;
@@ -9,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -23,19 +25,18 @@ public class BouquetController {
         this.service = service;
     }
 
-    // Доступен всем (например, на главной странице магазина)
+
     @GetMapping
     public List<Bouquet> getAll() {
         return service.findAll();
     }
 
-    // Только для аутентифицированных пользователей
+
     @PostMapping
     public ResponseEntity<Bouquet> create(
             @Valid @RequestBody Bouquet bouquet,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        // можно проверить роли, если нужно
         Bouquet saved = service.save(bouquet);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }

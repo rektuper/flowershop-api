@@ -69,10 +69,10 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new AuthResponse("Пользователь с таким именем уже существует"));
         }
 
-        Role roleUser = roleRepository.findByRoleName("USER")
+        Role roleUser = roleRepository.findByRoleName("ROLE_USER")
                 .orElseGet(() -> {
                     Role newRole = new Role();
-                    newRole.setRoleName("USER");
+                    newRole.setRoleName("ROLE_USER");
                     return roleRepository.save(newRole);
                 });
 
