@@ -24,7 +24,7 @@ public class BouquetService {
     }
 
     public Bouquet findById(Long id) {
-        return repo.findById(id).orElseThrow(() -> new NoSuchElementException("Bouquet not found"));
+        return repo.findById(id).orElseThrow(() -> new NoSuchElementException("Букет не найден"));
     }
 
     public Bouquet update(Long id, Bouquet updatedBouquet) {

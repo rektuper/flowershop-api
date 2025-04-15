@@ -1,16 +1,20 @@
 package com.flowershop.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
-@Data
-@Entity
-public class Role implements GrantedAuthority {
+import java.util.Set;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Role extends BaseEntity implements GrantedAuthority {
 
     private String roleName;
 
