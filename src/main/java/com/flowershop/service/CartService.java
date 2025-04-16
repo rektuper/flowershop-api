@@ -33,7 +33,7 @@ public class CartService {
 
         Optional<CartItem> existingItem = cartItemRepository.findByUserAndBouquet(
                 user, bouquetRepository.findById(dto.getBouquetId())
-                        .orElseThrow(() -> new RuntimeException("Bouquet not found"))
+                        .orElseThrow(() -> new RuntimeException("Букет не найден"))
         );
 
         if (existingItem.isPresent()) {

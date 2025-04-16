@@ -26,6 +26,7 @@ public class CartController {
         CartItem item = cartService.addToCart(principal.getName(), dto);
         return ResponseEntity.ok(item);
     }
+
     // Получение всех товаров в корзине
     @GetMapping
     public ResponseEntity<List<CartItemResponse>> getCart(Principal principal) {
