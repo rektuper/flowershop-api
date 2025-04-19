@@ -19,9 +19,11 @@ public class OrderMapper {
         orderDTO.setStatus(order.getStatus());
         orderDTO.setTotalPrice(order.getTotalPrice());
 
-        List<OrderItemDTO> orderItemsDTO = order.getOrderItems().stream()
+        List<OrderItemDTO> orderItemsDTO = order.getOrderItems() != null
+                ? order.getOrderItems().stream()
                 .map(this::mapToOrderItemDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                : List.of();
         orderDTO.setOrderItems(orderItemsDTO);
 
         return orderDTO;

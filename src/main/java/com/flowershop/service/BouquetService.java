@@ -34,6 +34,7 @@ public class BouquetService {
         bouquet.setPrice(updatedBouquet.getPrice());
         bouquet.setInStock(updatedBouquet.isInStock());
         bouquet.setFlowerList(updatedBouquet.getFlowerList());
+        bouquet.setImageUrl(updatedBouquet.getImageUrl());
         return repo.save(bouquet);
     }
 

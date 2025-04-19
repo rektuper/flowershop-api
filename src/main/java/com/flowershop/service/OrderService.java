@@ -69,6 +69,23 @@ public class OrderService {
         return savedOrder;
     }
 
+    public List<OrderHistoryDTO> getAllOrderHistoriesSorted(String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase("asc")
+                ? Sort.by("orderDate").ascending()
+                : Sort.by("orderDate").descending();
+
+        List<Order> orders = orderRepository.findAll(sort);
+
+        return orders.stream()
+                .map(order -> new OrderHistoryDTO(
+                        order.getId(),
+                        order.getStatus().name(),
+                        order.getOrderDate(),
+                        order.getTotalPrice()
+                ))
+                .toList();
+    }
+
     public void cancelOrder(Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isPresent()) {

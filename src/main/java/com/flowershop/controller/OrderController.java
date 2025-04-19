@@ -58,44 +58,5 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/history")
-    public ResponseEntity<List<OrderHistoryDTO>> getOrderHistory(
-            @AuthenticationPrincipal User user,
-            @RequestParam(required = false) OrderStatus status,
-            @RequestParam(defaultValue = "desc") String sort
-    ) {
-        if (status != null) {
-            return ResponseEntity.ok(orderService.getOrderHistoryFilteredAndSorted(user, status, sort));
-        } else {
-            return ResponseEntity.ok(orderService.getOrderHistorySorted(user, sort));
-        }
-    }
-
-    @GetMapping("/history/filter")
-    public ResponseEntity<List<OrderHistoryDTO>> getOrderHistoryByStatus(
-            @AuthenticationPrincipal User user,
-            @RequestParam OrderStatus status
-    ) {
-        return ResponseEntity.ok(orderService.getOrderHistoryByStatus(user, status));
-    }
-
-
-    @GetMapping("/history/sorted")
-    public ResponseEntity<List<OrderHistoryDTO>> getSortedOrderHistory(
-            @AuthenticationPrincipal User user,
-            @RequestParam(defaultValue = "desc") String sort
-    ) {
-        return ResponseEntity.ok(orderService.getOrderHistorySorted(user, sort));
-    }
-
-
-    @PutMapping("/{orderId}/status")
-    public ResponseEntity<Order> updateOrderStatus(
-            @PathVariable Long orderId,
-            @RequestBody UpdateOrderStatusRequest request
-    ) {
-        Order updated = orderService.updateOrderStatus(orderId, request.getStatus());
-        return ResponseEntity.ok(updated);
-    }
 
 }
