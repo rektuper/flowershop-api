@@ -13,7 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 @AllArgsConstructor
 @Entity
 public class Role extends BaseEntity implements GrantedAuthority {
-
+    @Column(unique = true)
     private String roleName;
 
     @Override

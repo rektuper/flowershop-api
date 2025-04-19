@@ -1,6 +1,5 @@
 package com.flowershop.controller;
 
-import com.flowershop.DTO.CartItemResponse;
 import com.flowershop.entity.Bouquet;
 import com.flowershop.service.BouquetService;
 import jakarta.validation.Valid;
@@ -10,7 +9,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 
@@ -25,12 +23,10 @@ public class BouquetController {
         this.service = service;
     }
 
-
     @GetMapping
     public List<Bouquet> getAll() {
         return service.findAll();
     }
-
 
     @PostMapping
     public ResponseEntity<Bouquet> create(
@@ -46,7 +42,6 @@ public class BouquetController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    // Только для аутентифицированных пользователей
     @PutMapping("/{id}")
     public ResponseEntity<Bouquet> update(
             @PathVariable Long id,
@@ -57,7 +52,6 @@ public class BouquetController {
         return ResponseEntity.ok(updated);
     }
 
-    // Только для аутентифицированных пользователей
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable Long id,

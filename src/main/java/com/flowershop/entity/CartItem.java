@@ -22,10 +22,8 @@ public class CartItem extends BaseEntity{
 
     private Integer quantity;
 
-    public Double getTotalPrice() {
-        BigDecimal price = bouquet.getPrice();
-        BigDecimal quantityDecimal = BigDecimal.valueOf(quantity);
-        return price.multiply(quantityDecimal).doubleValue();
+    public BigDecimal getTotalPrice() {
+        return bouquet.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }
 

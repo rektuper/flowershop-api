@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FavoriteMapper {
-
     public FavoriteBouquet toDto(Bouquet bouquet) {
         return new FavoriteBouquet(
                 bouquet.getId(),

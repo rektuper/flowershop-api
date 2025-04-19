@@ -1,11 +1,8 @@
 package com.flowershop.controller;
 
 import com.flowershop.DTO.OrderDTO;
-import com.flowershop.DTO.OrderHistoryDTO;
-import com.flowershop.DTO.UpdateOrderStatusRequest;
 import com.flowershop.entity.Order;
 import com.flowershop.entity.User;
-import com.flowershop.model.OrderStatus;
 import com.flowershop.service.OrderMapper;
 import com.flowershop.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +54,4 @@ public class OrderController {
             return ResponseEntity.badRequest().body("Ошибка: " + e.getMessage());
         }
     }
-
-
 }

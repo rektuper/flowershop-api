@@ -31,6 +31,5 @@ public class Bouquet extends BaseEntity{
 
     @ElementCollection
     private List<String> flowerList;
-
 }
 

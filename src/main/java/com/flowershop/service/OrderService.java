@@ -8,7 +8,6 @@ import com.flowershop.entity.User;
 import com.flowershop.model.OrderStatus;
 import com.flowershop.repository.CartItemRepository;
 import com.flowershop.repository.OrderRepository;
-import com.flowershop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import java.util.Optional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
     private final CartItemRepository cartItemRepository;
 
     public Order placeOrder(User user) {
@@ -33,13 +31,11 @@ public class OrderService {
             throw new IllegalStateException("Корзина пуста");
         }
 
-        // Создаём новый заказ
         Order order = new Order();
         order.setUser(user);
         order.setStatus(OrderStatus.NEW);
         order.setOrderDate(LocalDateTime.now());
 
-        // Считаем цену и создаём позиции в заказе
         List<OrderItem> orderItems = new ArrayList<>();
         BigDecimal totalPrice = BigDecimal.ZERO;
 
@@ -48,7 +44,7 @@ public class OrderService {
             orderItem.setBouquet(cartItem.getBouquet());
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setPriceAtPurchase(cartItem.getBouquet().getPrice());
-            orderItem.setOrder(order); // Устанавливаем связь с заказом
+            orderItem.setOrder(order);
 
             orderItems.add(orderItem);
 
@@ -57,13 +53,11 @@ public class OrderService {
             totalPrice = totalPrice.add(itemTotal);
         }
 
-        order.setOrderItems(orderItems); // Устанавливаем все товары
-        order.setTotalPrice(totalPrice); // Устанавливаем общую сумму
+        order.setOrderItems(orderItems);
+        order.setTotalPrice(totalPrice);
 
-        // Сохраняем заказ
         Order savedOrder = orderRepository.save(order);
 
-        // Очищаем корзину после оформления
         cartItemRepository.deleteAll(cartItems);
 
         return savedOrder;
@@ -100,7 +94,6 @@ public class OrderService {
             throw new IllegalArgumentException("Заказ с таким ID не найден.");
         }
     }
-
 
     public List<OrderHistoryDTO> getOrderHistoryForUser(User user) {
         return orderRepository.findByUser(user).stream()

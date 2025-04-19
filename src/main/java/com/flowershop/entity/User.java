@@ -1,5 +1,6 @@
 package com.flowershop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ public class User extends BaseEntity implements UserDetails {
         return roles;
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return userPassword;

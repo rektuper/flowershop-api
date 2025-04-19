@@ -1,11 +1,9 @@
 package com.flowershop.DTO;
 
 import com.flowershop.model.OrderStatus;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class UpdateOrderStatusRequest {
     private OrderStatus status;
 }
